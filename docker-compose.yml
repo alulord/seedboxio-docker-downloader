@@ -65,7 +65,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/resilio/config/:/config
       - ${CONFIG_DIR}/resilio/downloads/:/downloads
-      - ${CONFIG_DIR}/nginx/cert:/cert/cert:ro
+      - ${CONFIG_DIR}/nginx/cert:/cert:ro
       - ${STORAGE_DIR}:/data
     ports:
       - 55555:55555
