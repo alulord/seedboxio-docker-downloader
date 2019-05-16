@@ -60,7 +60,7 @@ services:
       - ${CONFIG_DIR}/resilio/config/:/config
       - ${CONFIG_DIR}/resilio/downloads/:/downloads
       - ${CONFIG_DIR}/nginx/cert:/cert:ro
-      - ${STORAGE_DIR}:/data
+      - ${STORAGE_DIR}:/sync
     ports:
       - 55555:55555
       - 8888:8888
