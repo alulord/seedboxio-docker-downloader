@@ -1,6 +1,17 @@
 version: '2'
 
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: on-failure
+    volumes:
+    - ${CONFIG_DIR}/nginx/html:/var/www/html:ro
+    - ${CONFIG_DIR}/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+    - 80:80
+    - 443:443
+
   radarr:
     image: linuxserver/radarr:arm32v7-0.2.0.1349-ls1
     container_name: radarr
