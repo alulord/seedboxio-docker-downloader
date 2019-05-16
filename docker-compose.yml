@@ -58,9 +58,9 @@ services:
     env_file:
       - .env
 
-  sync:
+  resilio:
     image: linuxserver/resilio-sync:arm32v7-2.6.3-ls11
-    container_name: sync
+    container_name: resilio
     restart: on-failure
     volumes:
       - ${CONFIG_DIR}/resilio/config/:/config
