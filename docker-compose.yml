@@ -17,6 +17,8 @@ services:
     image: linuxserver/radarr:arm32v7-0.2.0.1349-ls1
     container_name: radarr
     restart: on-failure
+    links:
+      - jackett
     volumes:
       - ${CONFIG_DIR}/radarr/config/:/config
       - ${MOVIE_DIR}:/movies
@@ -31,6 +33,8 @@ services:
     image: linuxserver/sonarr:arm32v7-3.0.1.493-ls73
     container_name: sonarr
     restart: on-failure
+    links:
+      - jackett
     volumes:
       - ${CONFIG_DIR}/sonarr/config/:/config
       - ${TV_SHOW_DIR}:/tv
