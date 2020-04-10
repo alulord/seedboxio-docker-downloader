@@ -1,75 +1,109 @@
-version: '2'
+version: "3.3"
 
 services:
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    restart: on-failure
-    volumes:
-    - ${CONFIG_DIR}/nginx/html:/var/www/html:ro
-    - ${CONFIG_DIR}/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
-    - ${CONFIG_DIR}/nginx/cert:/etc/nginx/cert:ro
+  traefik:
+    image: "traefik:v2.2"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    #      - "--accesslog=true"
     ports:
-    - 80:80
-    - 443:443
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - seedbox
+
+  whoami:
+    image: "containous/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+    networks:
+      - seedbox
 
   radarr:
-    image: linuxserver/radarr:arm32v7-0.2.0.1349-ls1
+    image: "linuxserver/radarr:${RADARR_VERSION}"
+    #    image: linuxserver/radarr:arm32v7-0.2.0.1349-ls1
     container_name: radarr
     restart: on-failure
     links:
       - jackett
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.localhost`)"
+      - "traefik.http.routers.radarr.entrypoints=web"
     volumes:
-      - ${CONFIG_DIR}/radarr/config/:/config
-      - ${MOVIE_DIR}:/movies
-      - ${STORAGE_DIR}/radarr:/downloads/radarr
+      - "${CONFIG_DIR}/radarr/config/:/config"
+      - "${MOVIE_DIR}:/movies"
+      - "${STORAGE_DIR}/radarr:/downloads/radarr"
     environment:
-      - PGID=1000
-      - PUID=993
-    env_file:
-      - .env
+      - "PGID=${RADARR_UID}"
+      - "PUID=${RADARR_GUID}"
+    networks:
+      - seedbox
 
   sonarr:
-    image: linuxserver/sonarr:arm32v7-3.0.1.493-ls73
+    image: "linuxserver/sonarr:${SONARR_VERSION}"
     container_name: sonarr
     restart: on-failure
     links:
       - jackett
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.localhost`)"
+      - "traefik.http.routers.sonarr.entrypoints=web"
     volumes:
-      - ${CONFIG_DIR}/sonarr/config/:/config
-      - ${TV_SHOW_DIR}:/tv
-      - ${STORAGE_DIR}/sonarr:/downloads/sonarr
+      - "${CONFIG_DIR}/sonarr/config/:/config"
+      - "${TV_SHOW_DIR}:/tv"
+      - "${STORAGE_DIR}/sonarr:/downloads/sonarr"
     environment:
-      - PGID=1000
-      - PUID=994
-    env_file:
-      - .env
+      - "PGID=${SONARR_UID}"
+      - "PUID=${SONARR_GUID}"
+    networks:
+      - seedbox
+
   jackett:
-    image: linuxserver/jackett:arm32v7-v0.11.334-ls10
+    image: "linuxserver/jackett:${JACKETT_VERSION}"
     container_name: jackett
     restart: on-failure
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jackett.rule=Host(`jackett.localhost`)"
+      - "traefik.http.routers.jackett.entrypoints=web"
     volumes:
-      - ${CONFIG_DIR}/jackett/config/:/config
+      - "${CONFIG_DIR}/jackett/config/:/config"
     environment:
-      - PGID=1000
-      - PUID=995
-    env_file:
-      - .env
+      - "PGID=${JACKETT_UID}"
+      - "PUID=${JACKETT_GUID}"
+    networks:
+      - seedbox
 
   resilio:
-    image: linuxserver/resilio-sync:arm32v7-2.6.3-ls11
+    image: "linuxserver/resilio-sync:${RESILIO_VERSION}"
     container_name: resilio
     restart: on-failure
     volumes:
-      - ${CONFIG_DIR}/resilio/config/:/config
-      - ${CONFIG_DIR}/resilio/downloads/:/downloads
-      - ${CONFIG_DIR}/nginx/cert:/cert:ro
-      - ${STORAGE_DIR}:/sync
+      - "${CONFIG_DIR}/resilio/config/:/config"
+      - "${CONFIG_DIR}/resilio/downloads/:/downloads"
+      - "${CONFIG_DIR}/nginx/cert:/cert:ro"
+      - "${STORAGE_DIR}:/sync"
     ports:
       - 55555:55555
       - 8888:8888
     environment:
-      - PGID=1000
-      - PUID=992
-    env_file:
-      - .env
+      - "PGID=${RESILIO_UID}"
+      - "PUID=${RESILIO_GUID}"
+    networks:
+      - seedbox
+
+networks:
+  seedbox:
+    driver: bridge
