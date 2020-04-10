@@ -19,15 +19,15 @@ services:
     networks:
       - seedbox
 
-  whoami:
-    image: "containous/whoami"
-    container_name: "simple-service"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
-    networks:
-      - seedbox
+  #  whoami:
+  #    image: "containous/whoami"
+  #    container_name: "simple-service"
+  #    labels:
+  #      - "traefik.enable=true"
+  #      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+  #      - "traefik.http.routers.whoami.entrypoints=web"
+  #    networks:
+  #      - seedbox
 
   radarr:
     image: "linuxserver/radarr:${RADARR_VERSION}"
@@ -38,7 +38,7 @@ services:
       - jackett
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.radarr.rule=Host(`radarr.localhost`)"
+      - "traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)"
       - "traefik.http.routers.radarr.entrypoints=web"
     volumes:
       - "${CONFIG_DIR}/radarr/config/:/config"
@@ -58,7 +58,7 @@ services:
       - jackett
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sonarr.rule=Host(`sonarr.localhost`)"
+      - "traefik.http.routers.sonarr.rule=Host(`${RADARR_HOST}`)"
       - "traefik.http.routers.sonarr.entrypoints=web"
     volumes:
       - "${CONFIG_DIR}/sonarr/config/:/config"
@@ -76,7 +76,7 @@ services:
     restart: on-failure
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jackett.rule=Host(`jackett.localhost`)"
+      - "traefik.http.routers.jackett.rule=Host(`${RADARR_HOST}`)"
       - "traefik.http.routers.jackett.entrypoints=web"
     volumes:
       - "${CONFIG_DIR}/jackett/config/:/config"
