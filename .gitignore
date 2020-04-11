@@ -15,3 +15,6 @@ traefik/ssl/newcerts
 traefik/ssl/*.attr
 traefik/ssl/*.old
 traefik/ssl/rootCA.crt
+traefik/ssl/.rnd
+traefik/ssl/serial
+traefik/ssl/index.*

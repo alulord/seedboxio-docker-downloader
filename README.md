@@ -56,6 +56,9 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout seedbox.key -out see
 
 Generate your ca key and cert
 ```bash
+cd traefik/ssl
+touch serial .rnd index.txt
+echo 01 > serial
 openssl genrsa -des3 -out private/rootCA.key 4096 
 openssl req -x509 -new -nodes -key private/rootCA.key -sha256 -days 1024 -out rootCA.crt -config openssl.cnf -extensions v3_ca
 ```
