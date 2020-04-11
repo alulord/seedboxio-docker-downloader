@@ -29,25 +29,6 @@ services:
   #    networks:
   #      - seedbox
 
-  scope:
-    image: weaveworks/scope:1.13.0
-    container_name: "scope"
-    privileged: true
-    labels:
-      - "works.weave.role=system"
-      - "traefik.enable=true"
-      - "traefik.http.routers.scope.rule=Host(`${SCOPE_HOST}`)"
-      - "traefik.http.routers.scope.entrypoints=web"
-      - "traefik.http.services.scope.loadbalancer.server.port=4040"
-      - "traefik.http.middlewares.scope-whitelist.ipwhitelist.sourcerange=${SCOPE_WHITELIST}"
-      - "traefik.http.routers.scope.middlewares=scope-whitelist@docker"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:rw"
-    command:
-      - "--probe.docker=true"
-    networks:
-      - seedbox
-
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
