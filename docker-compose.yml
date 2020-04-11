@@ -144,9 +144,13 @@ services:
       - "${CONFIG_DIR}/resilio/downloads/:/downloads"
       - "${CONFIG_DIR}/nginx/cert:/cert:ro"
       - "${STORAGE_DIR}:/sync"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.resilio.rule=Host(`${RESILIO_HOST}`)"
+      - "traefik.http.routers.resilio.entrypoints=web"
+      - "traefik.http.services.resilio.loadbalancer.server.port=8888"
     ports:
       - 55555:55555
-      - 8888:8888
     environment:
       - "PGID=${RESILIO_UID}"
       - "PUID=${RESILIO_GUID}"
