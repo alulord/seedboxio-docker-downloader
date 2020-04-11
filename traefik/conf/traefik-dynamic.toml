@@ -4,12 +4,6 @@
         certFile = "/certs/seedbox.pem"
         keyFile = "/certs/seedbox.key"
 
-[tls.options]
-  [tls.options.default]
-    [tls.options.default.clientAuth]
-      caFiles = ["/certs/rootCA.crt"]
-      clientAuthType = "RequireAndVerifyClientCert"
-
 [http.middlewares]
   [http.middlewares.ssl-redirect.headers]
     SSLRedirect = true

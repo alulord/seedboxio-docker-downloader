@@ -9,4 +9,5 @@ DNS.4 = radarr.rasp
 DNS.5 = jackett.rasp
 DNS.6 = resilio.rasp
 DNS.7 = plex.rasp
-DNS.8 = *.rasp
+DNS.8 = pihole.rasp
+DNS.9 = *.rasp
