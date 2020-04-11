@@ -8,6 +8,9 @@ sonarr/config/MediaCover/
 updater.txt
 Backups
 .idea/
-/traefik/certs/*
-!/traefik/certs
 run/
+traefik/ssl/private
+traefik/ssl/newcerts
+traefik/ssl/*.attr
+traefik/ssl/*.old
+traefik/ssl/rootCA.crt

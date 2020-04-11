@@ -46,10 +46,32 @@ While you're in the .env file, add in correct data for MOVIE_DIR, TV_SHOW_DIR, a
 
 To use on traefik you have to generate certificates in `traefik/certs` directory
 
+### Self sign cert
+
 ```bash
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout seedbox.key -out seedbox.crt
 ```
 
+### CA with cert
+
+Generate your ca key and cert
+```bash
+openssl genrsa -des3 -out private/rootCA.key 4096 
+openssl req -x509 -new -nodes -key private/rootCA.key -sha256 -days 1024 -out rootCA.crt -config openssl.cnf -extensions v3_ca
+```
+
+create key and request for your server
+
+```bash
+openssl genrsa -out private/seedbox.key 2048 
+openssl req -new -key private/seedbox.key -out csr/seedbox.csr -config openssl.cnf -extensions v3_req 
+```
+
+sign the request with your ca
+
+```bash
+openssl ca -config openssl.cnf -extfile seedbox.extension.cnf -in csr/seedbox.csr -out newcerts/seedbox.crt
+```
 
 ## Configure Radarr:
 
