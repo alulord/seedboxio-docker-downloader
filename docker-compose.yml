@@ -91,7 +91,7 @@ services:
     restart: on-failure
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.plex.rule=Host(`plex.localhost`)"
+      - "traefik.http.routers.plex.rule=Host(`${PLEX_HOST}`)"
       - "traefik.http.routers.plex.tls"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
     networks:
