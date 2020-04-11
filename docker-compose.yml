@@ -58,7 +58,7 @@ services:
     volumes:
       - "${CONFIG_DIR}/pihole/:/etc/pihole/"
       - "${CONFIG_DIR}/dnsmasq.d/:/etc/dnsmasq.d/"
-      - "./resolv.conf:/etc/resolv.conf"
+      - "${CONFIG_DIR}/resolv.conf:/etc/resolv.conf"
     cap_add:
       - NET_ADMIN
     environment:
