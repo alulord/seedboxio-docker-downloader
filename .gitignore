@@ -9,6 +9,7 @@ updater.txt
 Backups
 .idea/
 run/
+traefik/certs/
 traefik/ssl/private
 traefik/ssl/newcerts
 traefik/ssl/*.attr
