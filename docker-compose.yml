@@ -94,8 +94,8 @@ services:
       - "${MOVIE_DIR}:/movies"
       - "${STORAGE_DIR}/radarr:/downloads/radarr"
     environment:
-      - "PGID=${RADARR_UID}"
-      - "PUID=${RADARR_GUID}"
+      - "PUID=${RADARR_UID}"
+      - "PGID=${RADARR_GUID}"
     networks:
       - seedbox
 
@@ -114,8 +114,8 @@ services:
       - "${TV_SHOW_DIR}:/tv"
       - "${STORAGE_DIR}/sonarr:/downloads/sonarr"
     environment:
-      - "PGID=${SONARR_UID}"
-      - "PUID=${SONARR_GUID}"
+      - "PUID=${SONARR_UID}"
+      - "PGID=${SONARR_GUID}"
     networks:
       - seedbox
 
@@ -130,8 +130,8 @@ services:
     volumes:
       - "${CONFIG_DIR}/jackett/config/:/config"
     environment:
-      - "PGID=${JACKETT_UID}"
-      - "PUID=${JACKETT_GUID}"
+      - "PUID=${JACKETT_UID}"
+      - "PGID=${JACKETT_GUID}"
     networks:
       - seedbox
 
@@ -152,8 +152,8 @@ services:
     ports:
       - 55555:55555
     environment:
-      - "PGID=${RESILIO_UID}"
-      - "PUID=${RESILIO_GUID}"
+      - "PUID=${RESILIO_UID}"
+      - "PGID=${RESILIO_GUID}"
     networks:
       - seedbox
 
