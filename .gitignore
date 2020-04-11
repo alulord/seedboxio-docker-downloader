@@ -10,3 +10,4 @@ Backups
 .idea/
 /traefik/certs/*
 !/traefik/certs/openssl.cnf
+run/

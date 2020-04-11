@@ -78,6 +78,39 @@ services:
     cap_add:
       - NET_ADMIN
 
+  plex:
+    image: "linuxserver/plex:${PLEX_VERSION}"
+    container_name: plex
+    environment:
+      - "TZ=${TZ}"
+      - "PLEX_CLAIM=${PLEX_CLAIM}"
+      - "ADVERTISE_IP=http://${PLEX_HOST}"
+      - "PLEX_UID=${PLEX_UID}"
+      - "PLEX_GID=${PLEX_GUID}"
+      - "VERSION=docker"
+    volumes:
+      - "${CONFIG_DIR}/config:/config"
+      - "${CONFIG_DIR}/tv:/tv"
+      - "${CONFIG_DIR}/movies:/movies"
+    #https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/
+    ports:
+      - 3005:3005/tcp
+      # - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 1900:1900/udp
+    # - 32410:32410/udp
+    # - 32412:32412/udp
+    # - 32413:32413/udp
+    # - 32414:32414/udp
+    restart: on-failure
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex.rule=Host(`plex.localhost`)"
+      - "traefik.http.routers.plex.entrypoints=web"
+      - "traefik.http.services.plex.loadbalancer.server.port=32400"
+    networks:
+      - seedbox
+
 
   radarr:
     image: "linuxserver/radarr:${RADARR_VERSION}"
