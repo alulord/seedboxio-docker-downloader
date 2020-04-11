@@ -42,6 +42,15 @@ Now edit the .env file to include your newly generated Resilio Sync secret as RS
 
 While you're in the .env file, add in correct data for MOVIE_DIR, TV_SHOW_DIR, and STORAGE_DIR. These represent where you want you movies, your tv shows, and where your completed downloads should go.
 
+## Creating ssl certificates
+
+To use on traefik you have to generate certificates in `traefik/certs` directory
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout seedbox.key -out seedbox.crt
+```
+
+
 ## Configure Radarr:
 
 * Add indexers that you want to add. (Jackett can be configured / found on port 9117)

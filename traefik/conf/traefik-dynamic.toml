@@ -1,0 +1,9 @@
+[tls.stores]
+  [tls.stores.default]
+    [tls.stores.default.defaultCertificate]
+        certFile = "/certs/seedbox.crt"
+        keyFile = "/certs/seedbox.key"
+
+[http.middlewares]
+  [http.middlewares.ssl-redirect.headers]
+    SSLRedirect = true

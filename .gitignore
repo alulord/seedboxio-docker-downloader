@@ -9,5 +9,5 @@ updater.txt
 Backups
 .idea/
 /traefik/certs/*
-!/traefik/certs/openssl.cnf
+!/traefik/certs
 run/

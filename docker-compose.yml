@@ -4,18 +4,14 @@ services:
   traefik:
     image: "traefik:v2.2"
     container_name: "traefik"
-    command:
-      #      - "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    #      - "--accesslog=true"
     ports:
       - "80:80"
+      - "443:443"
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/certs:/certs"
+      - "./traefik/conf:/etc/traefik"
     networks:
       - seedbox
 
@@ -53,18 +49,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pihole.rule=Host(`${PIHOLE_HOST}`)"
-      - "traefik.http.routers.pihole.entrypoints=web"
+      - "traefik.http.routers.pihole.tls"
       - "traefik.http.services.pihole.loadbalancer.server.port=80"
-    #      - "traefik.frontend.priority=1"
-    #      - traefik.frontend.headers.SSLRedirect=true
-    #      - traefik.frontend.headers.STSSeconds=315360000
-    #      - traefik.frontend.headers.browserXSSFilter=true
-    #      - traefik.frontend.headers.contentTypeNosniff=true
-    #      - traefik.frontend.headers.forceSTSHeader=true
-    #      - traefik.frontend.headers.SSLHost=${DOMAINNAME}
-    #      - traefik.frontend.headers.STSIncludeSubdomains=true
-    #      - traefik.frontend.headers.STSPreload=true
-    #      - traefik.frontend.headers.frameDeny=true
     networks:
       seedbox:
         ipv4_address: '172.31.0.100'
@@ -106,11 +92,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex.rule=Host(`plex.localhost`)"
-      - "traefik.http.routers.plex.entrypoints=web"
+      - "traefik.http.routers.plex.tls"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
     networks:
       - seedbox
-
 
   radarr:
     image: "linuxserver/radarr:${RADARR_VERSION}"
@@ -121,7 +106,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)"
-      - "traefik.http.routers.radarr.entrypoints=web"
+      - "traefik.http.routers.radarr.tls"
     volumes:
       - "${CONFIG_DIR}/radarr/config/:/config"
       - "${MOVIE_DIR}:/movies"
@@ -141,7 +126,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`${SONARR_HOST}`)"
-      - "traefik.http.routers.sonarr.entrypoints=web"
+      - "traefik.http.routers.sonarr.tls"
     volumes:
       - "${CONFIG_DIR}/sonarr/config/:/config"
       - "${TV_SHOW_DIR}:/tv"
@@ -159,7 +144,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jackett.rule=Host(`${JACKETT_HOST}`)"
-      - "traefik.http.routers.jackett.entrypoints=web"
+      - "traefik.http.routers.jackett.tls"
     volumes:
       - "${CONFIG_DIR}/jackett/config/:/config"
     environment:
@@ -180,7 +165,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.resilio.rule=Host(`${RESILIO_HOST}`)"
-      - "traefik.http.routers.resilio.entrypoints=web"
+      - "traefik.http.routers.resilio.tls"
       - "traefik.http.services.resilio.loadbalancer.server.port=8888"
     ports:
       - 55555:55555
