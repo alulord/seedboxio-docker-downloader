@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 
 services:
   traefik:
@@ -29,81 +29,141 @@ services:
   #    networks:
   #      - seedbox
 
-  radarr:
-    image: "linuxserver/radarr:${RADARR_VERSION}"
-    #    image: linuxserver/radarr:arm32v7-0.2.0.1349-ls1
-    container_name: radarr
-    restart: on-failure
-    links:
-      - jackett
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)"
-      - "traefik.http.routers.radarr.entrypoints=web"
-    volumes:
-      - "${CONFIG_DIR}/radarr/config/:/config"
-      - "${MOVIE_DIR}:/movies"
-      - "${STORAGE_DIR}/radarr:/downloads/radarr"
-    environment:
-      - "PGID=${RADARR_UID}"
-      - "PUID=${RADARR_GUID}"
-    networks:
-      - seedbox
-
-  sonarr:
-    image: "linuxserver/sonarr:${SONARR_VERSION}"
-    container_name: sonarr
-    restart: on-failure
-    links:
-      - jackett
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.sonarr.rule=Host(`${SONARR_HOST}`)"
-      - "traefik.http.routers.sonarr.entrypoints=web"
-    volumes:
-      - "${CONFIG_DIR}/sonarr/config/:/config"
-      - "${TV_SHOW_DIR}:/tv"
-      - "${STORAGE_DIR}/sonarr:/downloads/sonarr"
-    environment:
-      - "PGID=${SONARR_UID}"
-      - "PUID=${SONARR_GUID}"
-    networks:
-      - seedbox
-
-  jackett:
-    image: "linuxserver/jackett:${JACKETT_VERSION}"
-    container_name: jackett
-    restart: on-failure
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.jackett.rule=Host(`${JACKETT_HOST}`)"
-      - "traefik.http.routers.jackett.entrypoints=web"
-    volumes:
-      - "${CONFIG_DIR}/jackett/config/:/config"
-    environment:
-      - "PGID=${JACKETT_UID}"
-      - "PUID=${JACKETT_GUID}"
-    networks:
-      - seedbox
-
-  resilio:
-    image: "linuxserver/resilio-sync:${RESILIO_VERSION}"
-    container_name: resilio
-    restart: on-failure
-    volumes:
-      - "${CONFIG_DIR}/resilio/config/:/config"
-      - "${CONFIG_DIR}/resilio/downloads/:/downloads"
-      - "${CONFIG_DIR}/nginx/cert:/cert:ro"
-      - "${STORAGE_DIR}:/sync"
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
     ports:
-      - 55555:55555
-      - 8888:8888
+      - "53:53/tcp"
+      - "53:53/udp"
+    #      - "67:67/udp"
+    #      - "80:80/tcp"
+    #      - "443:443/tcp"
+    restart: unless-stopped
+    volumes:
+      - "${CONFIG_DIR}/pihole/:/etc/pihole/"
+      - "${CONFIG_DIR}/dnsmasq.d/:/etc/dnsmasq.d/"
+      - "./resolv.conf:/etc/resolv.conf"
+    #      - "${CONFIG_DIR}/pihole/pihole.log:/var/log/pihole.log"
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    cap_add:
+      - NET_ADMIN
     environment:
-      - "PGID=${RESILIO_UID}"
-      - "PUID=${RESILIO_GUID}"
+      - TZ=${TZ}
+      - WEBPASSWORD=PIHOLEWEBPASSWORD
+      - VIRTUAL_HOST=pihole.localhost
+      - ServerIP=192.168.2.100
+      - DNS1=103.86.96.100
+      - DNS2=103.86.99.100
+      - DNSMASQ_LISTENING=all
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.localhost`)"
+      - "traefik.http.routers.pihole.entrypoints=web"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+    #      - "traefik.frontend.priority=1"
+    #      - traefik.frontend.headers.SSLRedirect=true
+    #      - traefik.frontend.headers.STSSeconds=315360000
+    #      - traefik.frontend.headers.browserXSSFilter=true
+    #      - traefik.frontend.headers.contentTypeNosniff=true
+    #      - traefik.frontend.headers.forceSTSHeader=true
+    #      - traefik.frontend.headers.SSLHost=${DOMAINNAME}
+    #      - traefik.frontend.headers.STSIncludeSubdomains=true
+    #      - traefik.frontend.headers.STSPreload=true
+    #      - traefik.frontend.headers.frameDeny=true
     networks:
-      - seedbox
+      seedbox:
+        ipv4_address: '172.31.0.100'
+
+  dhcphelper:
+    build: ./dhcp-helper
+    #    container_name: dhcphelper
+    restart: unless-stopped
+    network_mode: "host"
+    command: -s 172.31.0.100
+    cap_add:
+      - NET_ADMIN
+
+
+#  radarr:
+#    image: "linuxserver/radarr:${RADARR_VERSION}"
+#    #    image: linuxserver/radarr:arm32v7-0.2.0.1349-ls1
+#    container_name: radarr
+#    restart: on-failure
+#    links:
+#      - jackett
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)"
+#      - "traefik.http.routers.radarr.entrypoints=web"
+#    volumes:
+#      - "${CONFIG_DIR}/radarr/config/:/config"
+#      - "${MOVIE_DIR}:/movies"
+#      - "${STORAGE_DIR}/radarr:/downloads/radarr"
+#    environment:
+#      - "PGID=${RADARR_UID}"
+#      - "PUID=${RADARR_GUID}"
+#    networks:
+#      - seedbox
+#
+#  sonarr:
+#    image: "linuxserver/sonarr:${SONARR_VERSION}"
+#    container_name: sonarr
+#    restart: on-failure
+#    links:
+#      - jackett
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.sonarr.rule=Host(`${SONARR_HOST}`)"
+#      - "traefik.http.routers.sonarr.entrypoints=web"
+#    volumes:
+#      - "${CONFIG_DIR}/sonarr/config/:/config"
+#      - "${TV_SHOW_DIR}:/tv"
+#      - "${STORAGE_DIR}/sonarr:/downloads/sonarr"
+#    environment:
+#      - "PGID=${SONARR_UID}"
+#      - "PUID=${SONARR_GUID}"
+#    networks:
+#      - seedbox
+#
+#  jackett:
+#    image: "linuxserver/jackett:${JACKETT_VERSION}"
+#    container_name: jackett
+#    restart: on-failure
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.jackett.rule=Host(`${JACKETT_HOST}`)"
+#      - "traefik.http.routers.jackett.entrypoints=web"
+#    volumes:
+#      - "${CONFIG_DIR}/jackett/config/:/config"
+#    environment:
+#      - "PGID=${JACKETT_UID}"
+#      - "PUID=${JACKETT_GUID}"
+#    networks:
+#      - seedbox
+#
+#  resilio:
+#    image: "linuxserver/resilio-sync:${RESILIO_VERSION}"
+#    container_name: resilio
+#    restart: on-failure
+#    volumes:
+#      - "${CONFIG_DIR}/resilio/config/:/config"
+#      - "${CONFIG_DIR}/resilio/downloads/:/downloads"
+#      - "${CONFIG_DIR}/nginx/cert:/cert:ro"
+#      - "${STORAGE_DIR}:/sync"
+#    ports:
+#      - 55555:55555
+#      - 8888:8888
+#    environment:
+#      - "PGID=${RESILIO_UID}"
+#      - "PUID=${RESILIO_GUID}"
+#    networks:
+#      - seedbox
 
 networks:
   seedbox:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.0.0/16
