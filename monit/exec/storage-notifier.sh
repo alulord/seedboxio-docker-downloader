@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-echo "Disk $1 getting full" | pb push
+echo "Disk ${MONIT_SERVICE} getting full" | pb push
