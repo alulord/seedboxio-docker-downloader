@@ -1,0 +1,7 @@
+check program nordvpn with path /opt/seedboxio-docker-downloader/monit/nordvpn-healthcheck.sh as uid "alulord"
+    group system
+    group network
+    start = "/usr/bin/nordvpn c Netherlands" as uid "alulord"
+    stop = "/usr/bin/nordvpn d" as uid "alulord"
+    if status != 0 then restart
+    if 2 restarts within 3 cycles then exec "/usr/bin/nordvpn set killswitch off"

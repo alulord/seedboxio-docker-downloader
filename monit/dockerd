@@ -1,0 +1,6 @@
+check process docker with pidfile /var/run/docker.pid
+    group system
+    group docker
+    start program = "/bin/systemctl start docker"
+    stop program = "/bin/systemctl stop docker"
+

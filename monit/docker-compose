@@ -1,0 +1,3 @@
+check program docker-compose with path /opt/seedboxio-docker-downloader/monit/docker-compose-healthcheck.sh
+    group docker
+    if status != 0 for 2 cycles then exec "/opt/seedboxio-docker-downloader/monit/docker-compose-notifier.sh"
