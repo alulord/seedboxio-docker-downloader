@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-nordvpn status | grep "Status: Connected"
+/usr/bin/nordvpn status | grep "Status: Connected"
 exit $?

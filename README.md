@@ -107,7 +107,7 @@ There are configs for [M/Monit](https://mmonit.com/monit/documentation/monit.htm
 
 ## Notifications
 
-Notifications are done via [PushBullet](https://www.pushbullet.com). To use it as cli, you have to install python pip package [pushbullet-cli](https://pypi.org/project/pushbullet-cli/) and setup `PUSHBULLET_KEY` environment variable with your access key.
+Notifications are done via [PushBullet](https://www.pushbullet.com). To use it as cli, you have to install python pip package [pushbullet-cli](https://pypi.org/project/pushbullet-cli/) and setup `PUSHBULLET_KEY` environment variable in `/etc/environment` with your access key.
 
 # Congratulations!
 
