@@ -1,4 +1,4 @@
-check program nordvpn with path /opt/seedboxio-docker-downloader/monit/nordvpn-healthcheck.sh as uid "alulord"
+check program nordvpn with path /opt/seedboxio-docker-downloader/monit/exec/nordvpn-healthcheck.sh as uid "alulord"
     group system
     group network
     start = "/usr/bin/nordvpn c Netherlands" as uid "alulord"

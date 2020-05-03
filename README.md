@@ -101,7 +101,15 @@ psv23232.seedbox.io       /home/psv23232/files/CompletedDownloads/sonarr/       
 
 ```
 
-## Congratulations!
+# Monitoring
+
+There are configs for [M/Monit](https://mmonit.com/monit/documentation/monit.html) system monitoring. Symlink them to monit config folder and reload.
+
+## Notifications
+
+Notifications are done via [PushBullet](https://www.pushbullet.com). To use it as cli, you have to install python pip package [pushbullet-cli](https://pypi.org/project/pushbullet-cli/) and setup `PUSHBULLET_KEY` environment variable with your access key.
+
+# Congratulations!
 
 Now you should be all set up. If you have any problems, leave an issue in github and I'll get back to you.
 

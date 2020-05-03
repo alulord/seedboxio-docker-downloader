@@ -1,20 +1,20 @@
 check filesystem rootfs with path /
     group system
     group storage
-    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/storage-notifier.sh root"
+    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/exec/storage-notifier.sh root"
 
 check filesystem movies with path /dev/sdd1
     group storage
-    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/storage-notifier.sh movies"
+    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/exec/storage-notifier.sh movies"
 
 check filesystem series with path /dev/sdc1
     group storage
-    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/storage-notifier.sh series"
+    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/exec/storage-notifier.sh series"
 
 check filesystem backup with path /dev/sda1
     group storage
-    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/storage-notifier.sh backup"
+    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/exec/storage-notifier.sh backup"
 
 check filesystem buffer with path /dev/sdb1
     group storage
-    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/storage-notifier.sh buffer"
+    if space usage > 80% for 5 times within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/exec/storage-notifier.sh buffer"
