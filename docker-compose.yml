@@ -14,6 +14,7 @@ services:
       - "./traefik/conf:/etc/traefik"
     networks:
       - seedbox
+    restart: unless-stopped
 
   #  whoami:
   #    image: "containous/whoami"
@@ -41,18 +42,17 @@ services:
       - "${MOVIE_DIR}:/movies"
     #https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/
     ports:
-      - 3005:3005/tcp
-      - 8324:8324/tcp
-      #      - 5353:5353/udp
       - 32400:32400/tcp
-      - 32469:32469/tcp
-      - 1900:1900/udp
-      - 32410:32410/udp
-      - 32412:32412/udp
-      - 32413:32413/udp
-      - 32414:32414/udp
-
-    restart: on-failure
+    #      - 3005:3005/tcp
+    #      - 8324:8324/tcp
+    #      #      - 5353:5353/udp
+    #      - 32469:32469/tcp
+    #      - 1900:1900/udp
+    #      - 32410:32410/udp
+    #      - 32412:32412/udp
+    #      - 32413:32413/udp
+    #      - 32414:32414/udp
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex.rule=Host(`${PLEX_HOST}`)"
@@ -64,7 +64,7 @@ services:
   radarr:
     image: "linuxserver/radarr:${RADARR_VERSION}"
     container_name: radarr
-    restart: on-failure
+    restart: unless-stopped
     links:
       - jackett
     labels:
@@ -84,7 +84,7 @@ services:
   sonarr:
     image: "linuxserver/sonarr:${SONARR_VERSION}"
     container_name: sonarr
-    restart: on-failure
+    restart: unless-stopped
     links:
       - jackett
     labels:
@@ -104,7 +104,7 @@ services:
   jackett:
     image: "linuxserver/jackett:${JACKETT_VERSION}"
     container_name: jackett
-    restart: on-failure
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jackett.rule=Host(`${JACKETT_HOST}`)"
@@ -120,7 +120,7 @@ services:
   resilio:
     image: "linuxserver/resilio-sync:${RESILIO_VERSION}"
     container_name: resilio
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - "${CONFIG_DIR}/resilio/config/:/config"
       - "${CONFIG_DIR}/resilio/downloads/:/downloads"
