@@ -25,45 +25,6 @@ services:
   #    networks:
   #      - seedbox
 
-  pihole:
-    container_name: pihole
-    image: pihole/pihole:latest
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-    restart: unless-stopped
-    volumes:
-      - "${CONFIG_DIR}/pihole/:/etc/pihole/"
-      - "${CONFIG_DIR}/dnsmasq.d/:/etc/dnsmasq.d/"
-      - "${CONFIG_DIR}/resolv.conf:/etc/resolv.conf"
-    cap_add:
-      - NET_ADMIN
-    environment:
-      - TZ=${TZ}
-      - WEBPASSWORD=${PIHOLE_PASSWORD}
-      - VIRTUAL_HOST=${PIHOLE_HOST}
-      - ServerIP=${PIHOLE_IP}
-      - DNS1=${PIHOLE_DNS1}
-      - DNS2=${PIHOLE_DNS2}
-      - DNSMASQ_LISTENING=all
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`${PIHOLE_HOST}`)"
-      - "traefik.http.routers.pihole.tls"
-      - "traefik.http.services.pihole.loadbalancer.server.port=80"
-    networks:
-      seedbox:
-        ipv4_address: '172.31.0.100'
-
-  dhcphelper:
-    build: ./dhcp-helper
-    container_name: dhcphelper
-    restart: unless-stopped
-    network_mode: "host"
-    command: -s 172.31.0.100
-    cap_add:
-      - NET_ADMIN
-
   plex:
     image: "linuxserver/plex:${PLEX_VERSION}"
     container_name: plex
