@@ -138,6 +138,22 @@ services:
       - "PGID=${RESILIO_GUID}"
     networks:
       - seedbox
+  ombi:
+    image: "linuxserver/ombi:${OMBI_VERSION}"
+    container_name: ombi
+    environment:
+      - "PUID=${OMBI_UID}"
+      - "PGID=${OMBI_GUID}"
+    volumes:
+      - "${CONFIG_DIR}/ombi/config/:/config"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ombi.rule=Host(`${OMBI_HOST}`)"
+      - "traefik.http.routers.ombi.tls"
+    restart: unless-stopped
+    networks:
+      - seedbox
+
 
 networks:
   seedbox:
