@@ -76,6 +76,13 @@ sign the request with your ca
 openssl ca -config openssl.cnf -extfile seedbox.extension.cnf -in csr/seedbox.csr -out newcerts/seedbox.crt
 ```
 
+copy the keys into traefik directory
+```bash
+cp private/seedbox.key ../../traefik/certs
+cp newcerts/01.pem ../../traefik/certs/seedbox.pem
+```
+
+
 ## Configure Radarr:
 
 * Add indexers that you want to add. (Jackett can be configured / found on port 9117)

@@ -9,10 +9,14 @@ updater.txt
 Backups
 .idea/
 run/
+traefik/csr/*
+!traefik/csr/.gitkeep
 traefik/certs/*
 !traefik/certs/.gitkeep
-traefik/ssl/private
-traefik/ssl/newcerts
+traefik/ssl/private/*
+!traefik/ssl/private/.gitkeep
+traefik/ssl/newcerts/*
+!traefik/ssl/newcerts/.gitkeep
 traefik/ssl/*.attr
 traefik/ssl/*.old
 traefik/ssl/rootCA.crt

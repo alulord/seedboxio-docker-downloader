@@ -1,30 +1,55 @@
-version: "3.3"
+version: "3.8"
 
 services:
+#  whoami:
+#    image: "containous/whoami"
+#    container_name: "whoami"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+#      - "traefik.http.routers.whoami.entrypoints=web"
+#    networks:
+#      - seedbox
+
   traefik:
     image: "traefik:v2.2"
     container_name: "traefik"
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik/certs:/certs"
       - "./traefik/conf:/etc/traefik"
+    restart: unless-stopped
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+
+  vpn:
+    image: "bubuntux/nordvpn:${NORDVPN_VERSION}"
+    container_name: "vpn"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.rp_filter=2
+    devices:
+      - /dev/net/tun
+    environment:
+      - "TZ=${TZ}"
+      - "USER=${NORDVPN_USER}"
+      - "PASS=${NORDVPN_PASS}"
+      - "CONNECT=${NORDVPN_COUNTRY}"
+      - "TECHNOLOGY=NordLynx"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+      - "55555:55555"
+      - "32400:32400/tcp"
+    volumes:
+      - ./nordvpn/resolv.conf:/etc/resolv.conf
     networks:
       - seedbox
-    restart: unless-stopped
-
-  #  whoami:
-  #    image: "containous/whoami"
-  #    container_name: "simple-service"
-  #    labels:
-  #      - "traefik.enable=true"
-  #      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
-  #      - "traefik.http.routers.whoami.entrypoints=web"
-  #    networks:
-  #      - seedbox
 
   plex:
     image: "linuxserver/plex:${PLEX_VERSION}"
@@ -40,66 +65,73 @@ services:
       - "${CONFIG_DIR}/plex/config:/config"
       - "${TV_SHOW_DIR}:/tv"
       - "${MOVIE_DIR}:/movies"
+      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     #https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/
-    ports:
-      - 32400:32400/tcp
-    #      - 3005:3005/tcp
-    #      - 8324:8324/tcp
-    #      #      - 5353:5353/udp
-    #      - 32469:32469/tcp
-    #      - 1900:1900/udp
-    #      - 32410:32410/udp
-    #      - 32412:32412/udp
-    #      - 32413:32413/udp
-    #      - 32414:32414/udp
+#    ports:
+#      - 32400:32400/tcp
+#      - 3005:3005/tcp
+#      - 8324:8324/tcp
+#      #      - 5353:5353/udp
+#      - 32469:32469/tcp
+#      - 1900:1900/udp
+#      - 32410:32410/udp
+#      - 32412:32412/udp
+#      - 32413:32413/udp
+#      - 32414:32414/udp
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex.rule=Host(`${PLEX_HOST}`)"
       - "traefik.http.routers.plex.tls"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
-    networks:
-      - seedbox
+    entrypoint: ['/wait-for-it.sh', '-t', '30', 'www.google.com:80', '--', '/init']
+    network_mode: service:vpn
+    depends_on:
+      - vpn
 
   radarr:
     image: "linuxserver/radarr:${RADARR_VERSION}"
     container_name: radarr
     restart: unless-stopped
-    links:
-      - jackett
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)"
       - "traefik.http.routers.radarr.tls"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
     volumes:
       - "${CONFIG_DIR}/radarr/config/:/config"
       - "${MOVIE_DIR}:/movies"
       - "${STORAGE_DIR}/radarr:/downloads/radarr"
+      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     environment:
       - "PUID=${RADARR_UID}"
       - "PGID=${RADARR_GUID}"
-    networks:
-      - seedbox
+    entrypoint: ['/wait-for-it.sh', '-t', '30', 'www.google.com:80', '--', '/init']
+    network_mode: service:vpn
+    depends_on:
+      - vpn
 
   sonarr:
     image: "linuxserver/sonarr:${SONARR_VERSION}"
     container_name: sonarr
     restart: unless-stopped
-    links:
-      - jackett
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`${SONARR_HOST}`)"
       - "traefik.http.routers.sonarr.tls"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
     volumes:
       - "${CONFIG_DIR}/sonarr/config/:/config"
       - "${TV_SHOW_DIR}:/tv"
       - "${STORAGE_DIR}/sonarr:/downloads/sonarr"
+      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     environment:
       - "PUID=${SONARR_UID}"
       - "PGID=${SONARR_GUID}"
-    networks:
-      - seedbox
+    entrypoint: ['/wait-for-it.sh', '-t', '30', 'www.google.com:80', '--', '/init']
+    network_mode: service:vpn
+    depends_on:
+      - vpn
 
   jackett:
     image: "linuxserver/jackett:${JACKETT_VERSION}"
@@ -109,13 +141,17 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.jackett.rule=Host(`${JACKETT_HOST}`)"
       - "traefik.http.routers.jackett.tls"
+      - "traefik.http.services.jackett.loadbalancer.server.port=9117"
     volumes:
       - "${CONFIG_DIR}/jackett/config/:/config"
+      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     environment:
       - "PUID=${JACKETT_UID}"
       - "PGID=${JACKETT_GUID}"
-    networks:
-      - seedbox
+    entrypoint: ['/wait-for-it.sh', '-t', '30', 'www.google.com:80', '--', '/init']
+    network_mode: service:vpn
+    depends_on:
+      - vpn
 
   resilio:
     image: "linuxserver/resilio-sync:${RESILIO_VERSION}"
@@ -126,18 +162,22 @@ services:
       - "${CONFIG_DIR}/resilio/downloads/:/downloads"
       - "${CONFIG_DIR}/nginx/cert:/cert:ro"
       - "${STORAGE_DIR}:/sync"
+      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.resilio.rule=Host(`${RESILIO_HOST}`)"
       - "traefik.http.routers.resilio.tls"
       - "traefik.http.services.resilio.loadbalancer.server.port=8888"
-    ports:
-      - 55555:55555
+#    ports:
+#      - 55555:55555
     environment:
       - "PUID=${RESILIO_UID}"
       - "PGID=${RESILIO_GUID}"
-    networks:
-      - seedbox
+    entrypoint: ['/wait-for-it.sh', '-t', '30', 'www.google.com:80', '--', '/init']
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+
   ombi:
     image: "linuxserver/ombi:${OMBI_VERSION}"
     container_name: ombi
@@ -146,18 +186,23 @@ services:
       - "PGID=${OMBI_GUID}"
     volumes:
       - "${CONFIG_DIR}/ombi/config/:/config"
+      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ombi.rule=Host(`${OMBI_HOST}`)"
       - "traefik.http.routers.ombi.tls"
+      - "traefik.http.services.ombi.loadbalancer.server.port=3579"
+    entrypoint: ['/wait-for-it.sh', '-t', '30', 'www.google.com:80', '--', '/init']
     restart: unless-stopped
-    networks:
-      - seedbox
-
+    network_mode: service:vpn
+    depends_on:
+      - vpn
 
 networks:
   seedbox:
     driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: seedbox
     ipam:
       config:
         - subnet: 172.31.0.0/16
