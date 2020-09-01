@@ -42,6 +42,13 @@ services:
       - "TECHNOLOGY=NordLynx"
       - "NETWORK=${NORDVPN_NETWORK_WHITELIST}"
       - "WHITELIST=${NORDVPN_DOMAIN_WHITELIST}"
+    extra_hosts:
+      - "sonarr:127.0.0.1"
+      - "radarr:127.0.0.1"
+      - "jackett:127.0.0.1"
+      - "resilio:127.0.0.1"
+      - "ombi:127.0.0.1"
+      - "plex:127.0.0.1"
     ports:
       - "80:80"
       - "443:443"
@@ -95,9 +102,6 @@ services:
     image: "linuxserver/radarr:${RADARR_VERSION}"
     container_name: radarr
     restart: unless-stopped
-    links:
-      - vpn:jackett
-      - vpn:plex
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)"
@@ -120,9 +124,6 @@ services:
     image: "linuxserver/sonarr:${SONARR_VERSION}"
     container_name: sonarr
     restart: unless-stopped
-    links:
-      - vpn:jackett
-      - vpn:plex
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`${SONARR_HOST}`)"
@@ -189,10 +190,6 @@ services:
   ombi:
     image: "linuxserver/ombi:${OMBI_VERSION}"
     container_name: ombi
-    links:
-      - vpn:radarr
-      - vpn:sonarr
-      - vpn:plex
     environment:
       - "PUID=${OMBI_UID}"
       - "PGID=${OMBI_GUID}"
