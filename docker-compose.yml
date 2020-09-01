@@ -40,6 +40,7 @@ services:
       - "PASS=${NORDVPN_PASS}"
       - "CONNECT=${NORDVPN_COUNTRY}"
       - "TECHNOLOGY=NordLynx"
+      - "NETWORK=192.168.2.0/24"
     ports:
       - "80:80"
       - "443:443"
