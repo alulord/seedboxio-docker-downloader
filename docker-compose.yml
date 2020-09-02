@@ -156,7 +156,7 @@ services:
     environment:
       - "PUID=${JACKETT_UID}"
       - "PGID=${JACKETT_GUID}"
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'google.com:80', '--', '/init']
     network_mode: service:vpn
     depends_on:
       - vpn
