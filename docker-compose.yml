@@ -92,7 +92,7 @@ services:
       - "traefik.http.routers.plex.rule=Host(`${PLEX_HOST}`)"
       - "traefik.http.routers.plex.tls"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '30', 'www.google.com:80', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
     network_mode: service:vpn
     depends_on:
       - vpn
@@ -114,7 +114,7 @@ services:
     environment:
       - "PUID=${RADARR_UID}"
       - "PGID=${RADARR_GUID}"
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '30', 'www.google.com:80', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
     network_mode: service:vpn
     depends_on:
       - vpn
@@ -136,7 +136,7 @@ services:
     environment:
       - "PUID=${SONARR_UID}"
       - "PGID=${SONARR_GUID}"
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '30', 'www.google.com:80', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
     network_mode: service:vpn
     depends_on:
       - vpn
@@ -156,7 +156,7 @@ services:
     environment:
       - "PUID=${JACKETT_UID}"
       - "PGID=${JACKETT_GUID}"
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '30', 'www.google.com:80', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
     network_mode: service:vpn
     depends_on:
       - vpn
@@ -181,7 +181,7 @@ services:
     environment:
       - "PUID=${RESILIO_UID}"
       - "PGID=${RESILIO_GUID}"
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '30', 'www.google.com:80', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
     network_mode: service:vpn
     depends_on:
       - vpn
@@ -200,7 +200,7 @@ services:
       - "traefik.http.routers.ombi.rule=Host(`${OMBI_HOST}`)"
       - "traefik.http.routers.ombi.tls"
       - "traefik.http.services.ombi.loadbalancer.server.port=3579"
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '30', 'www.google.com:80', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
     restart: unless-stopped
     network_mode: service:vpn
     depends_on:
