@@ -112,6 +112,7 @@ services:
       - "${STORAGE_DIR}/radarr:/downloads/radarr"
       - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     environment:
+      - "TZ=${TZ}"
       - "PUID=${RADARR_UID}"
       - "PGID=${RADARR_GUID}"
     entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
@@ -134,6 +135,7 @@ services:
       - "${STORAGE_DIR}/sonarr:/downloads/sonarr"
       - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     environment:
+      - "TZ=${TZ}"
       - "PUID=${SONARR_UID}"
       - "PGID=${SONARR_GUID}"
     entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
@@ -154,6 +156,7 @@ services:
       - "${CONFIG_DIR}/jackett/config/:/config"
       - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
     environment:
+      - "TZ=${TZ}"
       - "PUID=${JACKETT_UID}"
       - "PGID=${JACKETT_GUID}"
     entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'google.com:80', '--', '/init']
@@ -179,6 +182,7 @@ services:
 #    ports:
 #      - 55555:55555
     environment:
+      - "TZ=${TZ}"
       - "PUID=${RESILIO_UID}"
       - "PGID=${RESILIO_GUID}"
     entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
@@ -190,6 +194,7 @@ services:
     image: "linuxserver/ombi:${OMBI_VERSION}"
     container_name: ombi
     environment:
+      - "TZ=${TZ}"
       - "PUID=${OMBI_UID}"
       - "PGID=${OMBI_GUID}"
     volumes:
