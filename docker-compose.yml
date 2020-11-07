@@ -123,7 +123,7 @@ services:
       - "TZ=${TZ}"
       - "PUID=${RADARR_UID}"
       - "PGID=${RADARR_GUID}"
-#    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
+    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
     network_mode: service:vpn
     depends_on:
       - vpn
