@@ -18,7 +18,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik/certs:/certs"
       - "./traefik/conf:/etc/traefik"
-      - "/etc/timezone:/etc/timezone:ro"
+#      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     restart: unless-stopped
     network_mode: service:vpn
@@ -58,7 +58,7 @@ services:
       - "32400:32400/tcp"
     volumes:
       - ./nordvpn/resolv.conf:/etc/resolv.conf
-      - "/etc/timezone:/etc/timezone:ro"
+#      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     networks:
       - seedbox
@@ -77,8 +77,8 @@ services:
       - "${CONFIG_DIR}/plex/config:/config"
       - "${TV_SHOW_DIR}:/tv"
       - "${MOVIE_DIR}:/movies"
-      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
-      - "/etc/timezone:/etc/timezone:ro"
+      - "./wait-for-it/wait-for-it.sh:/wait-for-it.sh"
+#      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     #https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/
 #    ports:
@@ -116,8 +116,8 @@ services:
       - "${CONFIG_DIR}/radarr/config/:/config"
       - "${MOVIE_DIR}:/movies"
       - "${STORAGE_DIR}/radarr:/downloads/radarr"
-      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
-      - "/etc/timezone:/etc/timezone:ro"
+      - "./wait-for-it/wait-for-it.sh:/wait-for-it.sh"
+#      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     environment:
       - "TZ=${TZ}"
@@ -141,8 +141,8 @@ services:
       - "${CONFIG_DIR}/sonarr/config/:/config"
       - "${TV_SHOW_DIR}:/tv"
       - "${STORAGE_DIR}/sonarr:/downloads/sonarr"
-      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
-      - "/etc/timezone:/etc/timezone:ro"
+      - "./wait-for-it/wait-for-it.sh:/wait-for-it.sh"
+ #     - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     environment:
       - "TZ=${TZ}"
@@ -164,8 +164,8 @@ services:
       - "traefik.http.services.jackett.loadbalancer.server.port=9117"
     volumes:
       - "${CONFIG_DIR}/jackett/config/:/config"
-      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
-      - "/etc/timezone:/etc/timezone:ro"
+      - "./wait-for-it/wait-for-it.sh:/wait-for-it.sh"
+#      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     environment:
       - "TZ=${TZ}"
@@ -185,8 +185,8 @@ services:
       - "${CONFIG_DIR}/resilio/downloads/:/downloads"
       - "${CONFIG_DIR}/nginx/cert:/cert:ro"
       - "${STORAGE_DIR}:/sync"
-      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
-      - "/etc/timezone:/etc/timezone:ro"
+      - "./wait-for-it/wait-for-it.sh:/wait-for-it.sh"
+#      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     labels:
       - "traefik.enable=true"
@@ -213,8 +213,8 @@ services:
       - "PGID=${OMBI_GUID}"
     volumes:
       - "${CONFIG_DIR}/ombi/config/:/config"
-      - './wait-for-it/wait-for-it.sh:/wait-for-it.sh'
-      - "/etc/timezone:/etc/timezone:ro"
+      - "./wait-for-it/wait-for-it.sh:/wait-for-it.sh"
+#      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     labels:
       - "traefik.enable=true"
