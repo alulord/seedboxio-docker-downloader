@@ -1,0 +1,21 @@
+[Unit]
+Description=Notification service for %i
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=notify
+EnvironmentFile=/opt/%i/.env
+Environment=HOME=/opt/%i/
+WorkingDirectory=/opt/%i
+ExecStart=/opt/seedboxio-docker-downloader/systemd/systemd_wrapper.sh
+ExecStop=/usr/bin/docker-compose down --remove-orphans
+ExecStopPost=/usr/bin/rm -f /var/run/seedbox-docker-downloader.pid
+# We don't need this, because we use monit to manage this service
+Restart=always
+RestartSec=10
+TimeoutSec=360
+WatchdogSec=60
+
+[Install]
+WantedBy=multi-user.target

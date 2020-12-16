@@ -1,3 +1,6 @@
-check program docker-compose with path "/opt/seedboxio-docker-downloader/monit/exec/docker-compose-healthcheck.sh"
+check process docker-compose with pidfile /var/run/seedbox-docker-downloader.pid
     group docker
-    if status != 0 for 2 cycles then exec "/opt/seedboxio-docker-downloader/monit/exec/docker-compose-notifier.sh"
+    start = "/bin/systemctl start docker-compose@seedboxio-docker-downloader.service" with timeout 360 seconds
+    stop = "/bin/systemctl stop docker-compose@seedboxio-docker-downloader.service" with timeout 60 seconds
+    if 1 restarts within 2 cycles then restart
+    if 3 restarts within 15 cycles then exec "/opt/seedboxio-docker-downloader/monit/exec/docker-compose-notifier.sh"

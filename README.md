@@ -5,7 +5,7 @@ This docker set up allows you to set up a local dockerized Sonarr, Radarr, Jacke
 ### Caveat:
 
 **Warning:** This whole README uses the same hostname, psv23232.seedbox.io. Anywhere you see that, change it to your seedbox.io hostname.
-
+**Warning:** Clone this to `/opt/` or edit paths in e.g. systemd unit
 
 # Installation
 
@@ -107,6 +107,10 @@ psv23232.seedbox.io       /home/psv23232/files/CompletedDownloads/radarr/       
 psv23232.seedbox.io       /home/psv23232/files/CompletedDownloads/sonarr/              /downloads/sonarr/
 
 ```
+
+# System unit
+
+Copy systemd unit responsible for docker-compose stack. `sudo cp systemd/docker-compose@.service /etc/systemd/system`. You can start it manually with `sudo systemctl start docker-compose@seedboxio-docker-downloader.service` or via monit service
 
 # Monitoring
 
