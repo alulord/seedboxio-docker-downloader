@@ -45,26 +45,17 @@ services:
       - "OBFUSCATE=Enable"
       - "NETWORK=${NORDVPN_NETWORK_WHITELIST}"
       - "WHITELIST=${NORDVPN_DOMAIN_WHITELIST}"
-      - "PORTS=32400"
     extra_hosts:
       - "sonarr:127.0.0.1"
       - "radarr:127.0.0.1"
       - "jackett:127.0.0.1"
       - "resilio:127.0.0.1"
       - "ombi:127.0.0.1"
-      - "plex:127.0.0.1"
+      - "plex:172.31.0.100"
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
       - "8080:8080/tcp"
-      - "32400:32400/tcp"
-#      - "5353:5353/udp"
-#      - "32469:32469/tcp"
-#      - "1900:1900/udp"
-#      - "32410:32410/udp"
-#      - "32412:32412/udp"
-#      - "32413:32413/udp"
-#      - "32414:32414/udp"
     volumes:
       - ./nordvpn/resolv.conf:/etc/resolv.conf
 #      - "/usr/share/zoneinfo:/etc/timezone:ro"
@@ -90,8 +81,8 @@ services:
 #      - "/usr/share/zoneinfo:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     #https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/
-#    ports:
-#      - "32400:32400/tcp"
+    ports:
+      - "32400:32400/tcp"
 #      - "3005:3005/tcp"
 #      - "8324:8324/tcp"
 #      - "5353:5353/udp"
@@ -107,12 +98,9 @@ services:
       - "traefik.http.routers.plex.rule=Host(`${PLEX_HOST}`)"
       - "traefik.http.routers.plex.tls"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
-#    networks:
-#      - seedbox
-    entrypoint: ['/wait-for-it.sh', '--strict', '-t', '90', 'jackett:9117', '--', '/init']
-    network_mode: service:vpn
-    depends_on:
-      - vpn
+    networks:
+      seedbox:
+        ipv4_address: 172.31.0.100
 
   radarr:
     image: "linuxserver/radarr:${RADARR_VERSION}"
@@ -245,4 +233,4 @@ networks:
       com.docker.network.bridge.name: seedbox
     ipam:
       config:
-        - subnet: 172.31.0.0/16
+        - subnet: 172.31.0.0/24
